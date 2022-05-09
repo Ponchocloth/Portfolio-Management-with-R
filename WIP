@@ -1,0 +1,63 @@
+#packages
+library("tseries")
+library("quantmod")
+library("Quandl")
+library("PortfolioAnalytics")
+library("DEoptim")
+
+#individual stocks
+# NVIDIA
+getSymbols("NVDA",src="yahoo",from="2022-02-15",to="2022-03-24")
+share1 <- NVDA[,6]
+Nvidia <- weeklyReturn(share1,type="arithmetic")
+colnames(Nvidia)<- "Nvidia_weekly_returns"
+#table.AnnualizedReturns(Nvidia)
+#charts.PerformanceSummary(Nvidia)
+
+# BLACKROCK
+getSymbols("BLK",src="yahoo",from="2022-02-15",to="2022-03-24")
+share2 <- BLK[,6]
+Blackrock <- weeklyReturn(share2,type="arithmetic")
+colnames(Blackrock)<- "Blackrock_weekly_return"
+
+# CROWDSTRIKE
+getSymbols("CRWD",src="yahoo",from="2022-02-15",to="2022-03-24")
+share3 <- CRWD[,6]
+Crowdstrike <- weeklyReturn(share3,type="log")
+colnames(Crowdstrike)<- "Crowdstrike_weekly_retuns"
+
+# MICRON TECHNOLOGIES
+getSymbols("MU",src="yahoo",from="2022-02-15",to="2022-03-24")
+share4 <- MU[,6]
+Micron_Technologies <- weeklyReturn(share4,type="arithmetic")
+colnames(share4)<- "Micron_Technologies_weekly_returns"
+
+# PROCTOR AND GAMBLE
+getSymbols("PG",src="yahoo",from="2022-02-15",to="2022-03-24")
+share5 <- PG[,6]
+Proctor_and_Gamble <- weeklyReturn(share5,type="arithmetic")
+colnames(Proctor_and_Gamble)<- "Proctor_and_Gamble_weekly_return"
+
+# TESLA
+getSymbols("TSLA",src="yahoo",from="2021-02-15",to="2022-03-24")
+share6 <- TSLA[,6]
+Tesla<- weeklyReturn(share6,type="arithmetic")
+colnames(Tesla)<-"Tesla_weekly_returns"
+
+# ALLEGHANY CORPORATION
+getSymbols("Y",src="yahoo",from="2022-02-15",to="2022-03-24")
+share7 <- Y[,6]
+Alleghany_Corporation <- weeklyReturn(share7,type="arithmetic")
+colnames(Alleghany_Corporation)<-"Alleghany_weekly_returns"
+
+# S&P 500
+getSymbols("SPY",src="yahoo",from="2022-02-15",to="2022-03-24")
+share8 <- SPY[,6]
+Standard_and_Poors <- weeklyReturn(share8,type="arithmetic")
+colnames(Standard_and_Poors)<-"SnP_weekly_returns"
+
+# Stocks comparison
+Individualstockscomp <- cbind(Nvidia, Blackrock, Crowdstrike, Micron_Technologies, Proctor_and_Gamble, Tesla, Alleghany_Corporation, Standard_and_Poors)
+table.AnnualizedReturns(Individualstockscomp)
+charts.PerformanceSummary(Individualstockscomp)
+
