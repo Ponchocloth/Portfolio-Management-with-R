@@ -117,7 +117,7 @@ maxlev <- 1/abs(min(R_allinall)-max(mula))
 maxlev
 
 #U.S. Large Cap Stock Market 2x Daily Leverage 
-getSymbols("SSO",src="yahoo",from="2022-02-15",to="2022-03-23")
+getSymbols("SSO",src="yahoo",from="2021-02-15",to="2022-03-23")
 lstocks2x <- SSO[,6]
 wlstocks2x <- monthlyReturn(lstocks2x)
 colnames(wlstocks2x) <- "wlstocks2x"
