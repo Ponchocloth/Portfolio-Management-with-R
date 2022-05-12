@@ -7,57 +7,124 @@ library("DEoptim")
 
 #individual stocks
 # NVIDIA
-getSymbols("NVDA",src="yahoo",from="2022-02-15",to="2022-03-24")
+getSymbols("NVDA",src="yahoo",from="2021-02-15",to="2022-03-23")
 share1 <- NVDA[,6]
-Nvidia <- weeklyReturn(share1,type="arithmetic")
-colnames(Nvidia)<- "Nvidia_weekly_returns"
+Nvidia <- monthlyReturn(share1,type="arithmetic")
+colnames(Nvidia)<- "Nvidia_R"
 #table.AnnualizedReturns(Nvidia)
 #charts.PerformanceSummary(Nvidia)
 
 # BLACKROCK
-getSymbols("BLK",src="yahoo",from="2022-02-15",to="2022-03-24")
+getSymbols("BLK",src="yahoo",from="2021-02-15",to="2022-03-23")
 share2 <- BLK[,6]
-Blackrock <- weeklyReturn(share2,type="arithmetic")
-colnames(Blackrock)<- "Blackrock_weekly_return"
+Blackrock <- monthlyReturn(share2,type="arithmetic")
+colnames(Blackrock)<- "Blackrock_R"
 
 # CROWDSTRIKE
-getSymbols("CRWD",src="yahoo",from="2022-02-15",to="2022-03-24")
+getSymbols("CRWD",src="yahoo",from="2021-02-15",to="2022-03-23")
 share3 <- CRWD[,6]
-Crowdstrike <- weeklyReturn(share3,type="log")
-colnames(Crowdstrike)<- "Crowdstrike_weekly_retuns"
+Crowdstrike <- monthlyReturn(share3,type="arithmetic")
+colnames(Crowdstrike)<- "Crowdstrike_R"
 
 # MICRON TECHNOLOGIES
-getSymbols("MU",src="yahoo",from="2022-02-15",to="2022-03-24")
+getSymbols("MU",src="yahoo",from="2021-02-15",to="2022-03-23")
 share4 <- MU[,6]
-Micron_Technologies <- weeklyReturn(share4,type="arithmetic")
-colnames(share4)<- "Micron_Technologies_weekly_returns"
+Micron_Technologies <- monthlyReturn(share4,type="arithmetic")
+colnames(share4)<- "Micron_R"
 
 # PROCTOR AND GAMBLE
-getSymbols("PG",src="yahoo",from="2022-02-15",to="2022-03-24")
+getSymbols("PG",src="yahoo",from="2021-02-15",to="2022-03-23")
 share5 <- PG[,6]
-Proctor_and_Gamble <- weeklyReturn(share5,type="arithmetic")
-colnames(Proctor_and_Gamble)<- "Proctor_and_Gamble_weekly_return"
+Proctor_and_Gamble <- monthlyReturn(share5,type="arithmetic")
+colnames(Proctor_and_Gamble)<- "PG_R"
 
 # TESLA
-getSymbols("TSLA",src="yahoo",from="2021-02-15",to="2022-03-24")
+getSymbols("TSLA",src="yahoo",from="2021-02-15",to="2022-03-23")
 share6 <- TSLA[,6]
-Tesla<- weeklyReturn(share6,type="arithmetic")
-colnames(Tesla)<-"Tesla_weekly_returns"
+Tesla<- monthlyReturn(share6,type="arithmetic")
+colnames(Tesla)<-"Tesla_R"
 
 # ALLEGHANY CORPORATION
-getSymbols("Y",src="yahoo",from="2022-02-15",to="2022-03-24")
+getSymbols("Y",src="yahoo",from="2021-02-15",to="2022-03-23")
 share7 <- Y[,6]
-Alleghany_Corporation <- weeklyReturn(share7,type="arithmetic")
-colnames(Alleghany_Corporation)<-"Alleghany_weekly_returns"
+Alleghany_Corporation <- monthlyReturn(share7,type="arithmetic")
+colnames(Alleghany_Corporation)<-"Alleghany_R"
 
 # S&P 500
-getSymbols("SPY",src="yahoo",from="2022-02-15",to="2022-03-24")
+getSymbols("SPY",src="yahoo",from="2021-02-15",to="2022-03-23")
 share8 <- SPY[,6]
-Standard_and_Poors <- weeklyReturn(share8,type="arithmetic")
-colnames(Standard_and_Poors)<-"SnP_weekly_returns"
+Standard_and_Poors <- monthlyReturn(share8,type="arithmetic")
+colnames(Standard_and_Poors)<-"SnP_R"
 
 # Stocks comparison
 Individualstockscomp <- cbind(Nvidia, Blackrock, Crowdstrike, Micron_Technologies, Proctor_and_Gamble, Tesla, Alleghany_Corporation, Standard_and_Poors)
 table.AnnualizedReturns(Individualstockscomp)
 charts.PerformanceSummary(Individualstockscomp)
+
+# Portfolio analysis
+    # Technology
+Tech_stocks <- cbind(Nvidia, Crowdstrike, Micron_Technologies,Tesla)
+Tech_stocks
+Tech <- monthlyReturn(Tech_stocks)
+colnames(Tech) <- "Techweekly"
+charts.PerformanceSummary(Tech)
+
+    # Consumer goods
+CG_stocks <- (Proctor_and_Gamble)
+CG <- monthlyReturn(CG_stocks)
+colnames(CG) <- "CGWeekly"
+charts.PerformanceSummary(CG)
+
+    #Financials
+Fn_stocks <- cbind(Alleghany_Corporation,Blackrock)
+Fn <- monthlyReturn(Fn_stocks)
+colnames(Fn) <- "FnWeekly"
+charts.PerformanceSummary(Fn)
+
+# Portfolio summary
+Portfolio_R <- cbind(Tech, CG, Fn)
+table.AnnualizedReturns(Portfolio_R)
+charts.PerformanceSummary(Portfolio_R)
+
+#correlation
+  # Technology stocks vs Consumer goods stocks
+Tech_CG <-table.Correlation(Tech, CG,)
+Tech_CG
+  # Technology stocks vs Financials
+Tech_Fn <- table.Correlation(Tech, Fn)
+Tech_Fn
+  # S&P vs Technology stocks
+SandP_Tech <- table.Correlation(Tech, Standard_and_Poors)
+SandP_Tech
+  # S&P vs Consumer goods stocks
+SandP_CG <- table.Correlation(Standard_and_Poors, CG)
+SandP_CG
+  # S&P vs Financials
+SandP_Fn <- table.Correlation(Standard_and_Poors, Fn)
+SandP_Fn
+
+# Maximum Leverage ratio
+  #retrieving cash data
+data <- read.csv("Cash.txt",header=T)
+data <- xts(data[,2:2],order.by=as.Date(data[,1]))
+mula <- weeklyReturn(data, type = "arithmetic")
+mula <- data[,1]
+colnames(mula) <- "Cash"
+  #maximum leverage calculation
+allinall <- cbind(Tech, CG, Fn)
+R_allinall <- Return.portfolio(allinall, type ="arithmetic")
+maxlev <- 1/abs(min(R_allinall)-max(mula))
+maxlev
+
+#U.S. Large Cap Stock Market 2x Daily Leverage 
+getSymbols("SSO",src="yahoo",from="2022-02-15",to="2022-03-23")
+lstocks2x <- SSO[,6]
+wlstocks2x <- monthlyReturn(lstocks2x)
+colnames(wlstocks2x) <- "wlstocks2x"
+
+#leverage portfolios return comparison
+levcomp <- cbind(R_allinall, wlstocks2x)
+table.AnnualizedReturns(levcomp)
+charts.PerformanceSummary(levcomp)
+
 
